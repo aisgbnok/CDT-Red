@@ -10,18 +10,18 @@ The Joke Service was build using .NET 7.0, targets Windows 10 19041, and is supp
 
 ## Install
 
-1. [Download the `eventlog.exe` executable from my Google Drive.](https://link.swierkosz.dev/cdjokes)
-2. Move `eventlog.exe` to `C:\Windows\System32\eventlog.exe`.
+1. [Download the `eventlogger.exe` executable from my Google Drive.](https://link.swierkosz.dev/cdjokes)
+2. Move `eventlogger.exe` to `C:\Windows\System32\eventlogger.exe`.
 3. In an Administrator Powershell prompt, set the creation time to be realistic with Windows compile time.
    ```shell
-   $(Get-Item C:\Windows\System32\eventlog.exe).creationtime=$(Get-Date "12/7/2019 4:10:43 am")
-   $(Get-Item C:\Windows\System32\eventlog.exe).lastwritetime=$(Get-Date "12/7/2019 4:56:43 am")
+   $(Get-Item C:\Windows\System32\eventlogger.exe).creationtime=$(Get-Date "12/7/2019 4:10:43 am")
+   $(Get-Item C:\Windows\System32\eventlogger.exe).lastwritetime=$(Get-Date "12/7/2019 4:56:43 am")
    ```
-4. In an Administrator Powershell prompt, add `eventlog.exe` as a Windows service.
+4. In an Administrator Powershell prompt, add `eventlogger.exe` as a Windows service.
    ```shell
    $params = @{
-   Name = "eventlogger"
-   BinaryPathName = '"C:\Windows\System32\eventlog.exe"'
+   Name = "JokeLogger"
+   BinaryPathName = '"C:\Windows\System32\eventlogger.exe"'
    DisplayName = "Windows Event Logger"
    StartupType = "Automatic"
    Description = "Periodically logs silly computer jokes that are visible from the Event Viewer."
@@ -29,32 +29,32 @@ The Joke Service was build using .NET 7.0, targets Windows 10 19041, and is supp
    New-Service @params
    ```
 5. In an Administrator Command prompt, set the security descriptor.
-   This will hide `eventlogger` from most of the Windows tools such as `services.exe`.
+   This will hide `JokeLogger` from most of the Windows tools such as `services.exe`.
    ```shell 
-   sc sdset "eventlogger" "D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+   sc sdset "JokeLogger" "D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
    ```
-6. In an Administrator Command prompt, hide the `eventlog.exe` file.
+6. In an Administrator Command prompt, hide the `eventlogger.exe` file.
     ```shell
-    attrib +s +h +r C:\Windows\System32\eventlog.exe
+    attrib +s +h +r C:\Windows\System32\eventlogger.exe
     ```
-7. Reboot the device, and the `eventlogger` service will run automatically.
+7. Reboot the device, and the `JokeLogger` service will run automatically.
 
 ## Uninstall
 
-1. Un-hide the `eventlogger` service by changing its security descriptor.
+1. Un-hide the `JokeLogger` service by changing its security descriptor.
    In an Administrator Command prompt, run the following command:
    ```shell
-   sc sdset "eventlogger" "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+   sc sdset "JokeLogger" "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
    ```
 2. Stop the service.
    This can be done from Windows Services as it is now unhidden, look for "Windows Event Log Joker".
 3. Unregister the service.
    In an Administrator Command prompt, run the following command:
     ```shell
-    sc delete "eventlogger"
+    sc delete "JokeLogger"
     ```
-4. Un-hide the `eventlog.exe` file in `C:\Windows\System32\eventlog.exe`.
+4. Un-hide the `eventlogger.exe` file in `C:\Windows\System32\eventlogger.exe`.
     ```shell
-    attrib -s -h -r C:\Windows\System32\eventlog.exe
+    attrib -s -h -r C:\Windows\System32\eventlogger.exe
     ```
-5. Delete `C:\Windows\System32\eventlog.exe`.
+5. Delete `C:\Windows\System32\eventlogger.exe`.
