@@ -3,6 +3,12 @@
 This repository holds my Red Team scripts and tools during my time in the Cyber Defense Techniques (CSEC 473) course.
 This repository is for personal usage; however, it may be beneficial to others looking for examples or references.
 
+## Repository Structure
+
+| Directory              | Purpose                                                               |
+|------------------------|-----------------------------------------------------------------------|
+| [**guides**](guides)   | Guides for setting up services and using tools.                       |
+
 ## License
 
 This repository is unlicensed and owned by Anthony Swierkosz.
