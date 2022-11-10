@@ -12,41 +12,46 @@ The Joke Service was build using .NET 7.0, targets Windows 10 19041, and is supp
 
 1. [Download the `eventlog.exe` executable from my Google Drive.](https://link.swierkosz.dev/cdjokes)
 2. Move `eventlog.exe` to `C:\Windows\System32\eventlog.exe`.
-3. In an Administrator Powershell prompt, add `eventlog.exe` as a Windows service.
+3. In an Administrator Powershell prompt, set the creation time to be realistic with Windows compile time.
+   ```shell
+   $(Get-Item eventlog.exe).creationtime=$(Get-Date "12/7/2019 4:10:43 am")
+   $(Get-Item eventlog.exe).lastwritetime=$(Get-Date "12/7/2019 4:56:43 am")
+   ```
+4. In an Administrator Powershell prompt, add `eventlog.exe` as a Windows service.
    ```shell
    $params = @{
-   Name = "eventlog"
+   Name = "eventlogger"
    BinaryPathName = '"C:\WINDOWS\System32\eventlog.exe"'
-   DisplayName = "Windows Event Log Joker"
+   DisplayName = "Windows Event Logger"
    StartupType = "Automatic"
    Description = "Periodically logs silly computer jokes that are visible from the Event Viewer."
    }
    New-Service @params
    ```
-4. In an Administrator Command prompt, set the security descriptor.
-   This will hide `eventlog.exe` from most of the Windows tools such as `services.exe`.
+5. In an Administrator Command prompt, set the security descriptor.
+   This will hide `eventlogger` from most of the Windows tools such as `services.exe`.
    ```shell 
-   sc sdset "eventlog" "D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+   sc sdset "eventlogger" "D:(D;;DCLCWPDTSD;;;IU)(D;;DCLCWPDTSD;;;SU)(D;;DCLCWPDTSD;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
    ```
-5. In an Administrator Command prompt, hide the `eventlog.exe` file.
+6. In an Administrator Command prompt, hide the `eventlog.exe` file.
     ```shell
     attrib +s +h +r C:\Windows\System32\eventlog.exe
     ```
-6. Reboot the device, and the `eventlog` service will run automatically.
+7. Reboot the device, and the `eventlogger` service will run automatically.
 
 ## Uninstall
 
-1. Un-hide the `eventlog` service by changing its security descriptor.
+1. Un-hide the `eventlogger` service by changing its security descriptor.
    In an Administrator Command prompt, run the following command:
    ```shell
-   sc sdset "eventlog" "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
+   sc sdset "eventlogger" "D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;IU)(A;;CCLCSWLOCRRC;;;SU)S:(AU;FA;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;WD)"
    ```
 2. Stop the service.
    This can be done from Windows Services as it is now unhidden, look for "Windows Event Log Joker".
 3. Unregister the service.
    In an Administrator Command prompt, run the following command:
     ```shell
-    sc delete "eventlog"
+    sc delete "eventlogger"
     ```
 4. Un-hide the `eventlog.exe` file in `C:\Windows\System32\eventlog.exe`.
     ```shell
