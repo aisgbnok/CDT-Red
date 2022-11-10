@@ -14,14 +14,14 @@ The Joke Service was build using .NET 7.0, targets Windows 10 19041, and is supp
 2. Move `eventlog.exe` to `C:\Windows\System32\eventlog.exe`.
 3. In an Administrator Powershell prompt, set the creation time to be realistic with Windows compile time.
    ```shell
-   $(Get-Item eventlog.exe).creationtime=$(Get-Date "12/7/2019 4:10:43 am")
-   $(Get-Item eventlog.exe).lastwritetime=$(Get-Date "12/7/2019 4:56:43 am")
+   $(Get-Item C:\Windows\System32\eventlog.exe).creationtime=$(Get-Date "12/7/2019 4:10:43 am")
+   $(Get-Item C:\Windows\System32\eventlog.exe).lastwritetime=$(Get-Date "12/7/2019 4:56:43 am")
    ```
 4. In an Administrator Powershell prompt, add `eventlog.exe` as a Windows service.
    ```shell
    $params = @{
    Name = "eventlogger"
-   BinaryPathName = '"C:\WINDOWS\System32\eventlog.exe"'
+   BinaryPathName = '"C:\Windows\System32\eventlog.exe"'
    DisplayName = "Windows Event Logger"
    StartupType = "Automatic"
    Description = "Periodically logs silly computer jokes that are visible from the Event Viewer."
